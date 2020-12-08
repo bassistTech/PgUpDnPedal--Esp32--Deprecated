@@ -12,3 +12,7 @@ I really like the Teensy family of boards. You can treat them "like an Arduino" 
 Circuit design
 
 Here it is, in all its glory: A Teensy LC and two pushbutton switches.
+
+![Schematic](./img/schem.png)
+
+![Picture](./img/picture.png)
