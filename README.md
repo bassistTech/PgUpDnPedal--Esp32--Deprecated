@@ -1,5 +1,5 @@
 # PgUpDnPedal
-Page turning pedal
+## Page turning pedal
 
 Francis Deck, Dec. 7, 2020
 
@@ -11,7 +11,7 @@ I really like the Teensy family of boards. You can treat them "like an Arduino" 
 
 To make this work as a useful pedal, I had to play around with how it actually handles key-down and key-up events. I deliberately don't want the buttons to repeat, because there's seldom a use for flipping quickly through a chart, and a good reason for not wanting it to flip more than one page. It works in a way that overrides the built-in keyboard repetition of Windows.
 
-Circuit design
+## Circuit design
 
 Here it is, in all its glory: A Teensy LC and two pushbutton switches. The numbers 0 and 1 refer to the numbers silk-screened onto the bottom of the Teensy LC board. G is ground. The switches are plain momentary contact pushbutton switches.
 
@@ -21,6 +21,8 @@ And here's the build. I made the enclosure out of wood and a piece of Lexan from
 
 ![Picture](./img/picture.png)
 
+## Program code
+
 Arduino code is in the PgUpDn folder. To use it, you need to install the latest version of Arduino on your PC, as well as the Teensyduino package from PJRC. As a note to the un-initiated, Arduino is considered to be "easy" for enthusiasts, but if you're a complete beginner at this stuff, there's actually a fairly steep learning curve.
 
 When you get Arduino and Teensyduino installed, you can open the source code file, and you'll need to choose some settings:
@@ -29,7 +31,5 @@ When you get Arduino and Teensyduino installed, you can open the source code fil
   USB Type --> Keyboard
   
 The first setting tells it you've got a Teensy LC, among the many possible Teensy boards. The second tells it to add USB keyboard emulation firmware to the libraries that are available to your program.
-  
-
 
 I will add some more detailed instructions on where to find the tools that you need, but for now, this is it.
