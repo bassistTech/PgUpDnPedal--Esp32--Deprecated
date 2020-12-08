@@ -28,6 +28,7 @@ Arduino code is in the PgUpDn folder. To use it, you need to install the latest 
 When you get Arduino and Teensyduino installed, you can open the source code file, and you'll need to choose some settings:
 
   Tools --> Board --> Teensyduino --> Teensy LC
+  
   USB Type --> Keyboard
   
 The first setting tells it you've got a Teensy LC, among the many possible Teensy boards. The second tells it to add USB keyboard emulation firmware to the libraries that are available to your program.
