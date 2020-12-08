@@ -9,6 +9,8 @@ It's based on Teensy LC, a low cost microcontroller development board. For hardw
 
 I really like the Teensy family of boards. You can treat them "like an Arduino" using the standard libraries, and a lot of Arduino code will run on them directly. But Arduino is just a thin wrapper around GCC, and the Teensy libraries expose the entire register space of the microcontrollers, so it's easy to reach bare metal and make use of the full functionality of the chips at top performance.
 
+To make this work as a useful pedal, I had to play around with how it actually handles key-down and key-up events. I deliberately don't want the buttons to repeat, because there's seldom a use for flipping quickly through a chart, and a good reason for not wanting it to flip more than one page. It works in a way that overrides the built-in keyboard repetition of Windows.
+
 Circuit design
 
 Here it is, in all its glory: A Teensy LC and two pushbutton switches. The numbers 0 and 1 refer to the numbers silk-screened onto the bottom of the Teensy LC board. G is ground. The switches are plain momentary contact pushbutton switches.
