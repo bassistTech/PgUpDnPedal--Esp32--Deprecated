@@ -17,17 +17,21 @@
  *  
  *  Starting point was the example program for this library:
  *  https://github.com/T-vK/ESP32-BLE-Keyboard
+ *  You need to visit this repository, download it library as a ZIP file
+ *  and install it using the library manager. This is done with:
+ *    Sketch --> Include Library --> Add ZIP library
 */
 
 // Pin definitions
 
-//#define esp32Thing
-#define wemos
+#define esp32Thing
+//#define wemos
 
 #define pgUp 17 // Page-Up button, SPST momentary contact switch closure to ground
 #define pgDn 16 // Page-Down buttton, SPST momentary contact switch closure to ground
 #ifdef esp32Thing
   #define ledPin 5 // On-board LED indicator
+  #define ePin 0 // On-board pushbutton
 #endif
 #ifdef wemos
   #define ledPin 22
@@ -35,11 +39,14 @@
 
 #include <BleKeyboard.h>
 
-BleKeyboard bleKeyboard("PgUpDnPedal");
+BleKeyboard bleKeyboard("PtPedal");
 
 void setup() {
   pinMode(pgUp, INPUT_PULLUP);
   pinMode(pgDn, INPUT_PULLUP);
+  #ifdef esp32Thing
+    pinMode(ePin, INPUT_PULLUP);
+  #endif
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
   bleKeyboard.begin();
@@ -54,6 +61,8 @@ void loop() {
   // because that's a bad thing in a sheet music reading situation
   
   while(bleKeyboard.isConnected()) {
+    digitalWrite(ledPin, HIGH);
+    
     if (!digitalRead(pgUp)) {
       digitalWrite(ledPin, HIGH);
       delay(100);
@@ -73,13 +82,21 @@ void loop() {
       delay(100);
       digitalWrite(ledPin, LOW);
     }
+
+    #ifdef esp32Thing
+      if (!digitalRead(ePin)) {
+        digitalWrite(ledPin, HIGH);
+        delay(100);
+        bleKeyboard.print("e");
+        while(!digitalRead(pgDn));
+        delay(100);
+        digitalWrite(ledPin, LOW);
+      }
+    #endif
   }
 
   // So long as the program is waiting for a connection from the host, it blinks
   // the LED.
-  
-  for (i=0; i<20; i++) {
-    digitalWrite(ledPin, i % 2);
-    delay(50);
-  }
+
+  digitalWrite(ledPin, (millis()/128) % 2);
 }
