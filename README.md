@@ -143,7 +143,7 @@ My program behaves differently than a real keyboard. Most keyboards have an auto
 
 ## Bill of materials (BOM)
 
-This is where it gets weird. I built my first prototype from spare parts, so I wasn't concerned about the cost. For the MCU, I chose a SparkFun ESP32 Thing board:
+I built my first prototype from spare parts, so I wasn't concerned about the cost. For the MCU, I chose a SparkFun ESP32 Thing board:
 
 https://www.sparkfun.com/products/13907
 
