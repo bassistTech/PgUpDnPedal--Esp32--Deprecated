@@ -24,73 +24,77 @@
 
 // Pin definitions
 
-#define esp32Thing
-//#define wemos
+//#define esp32Thing
+#define wemos
+// for WEMOS board, compile under WEMOS LOLIN32 Lite
+// add to external libraries: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+// add "esp32" in library manager
 
 #define pgUp 17 // Page-Up button, SPST momentary contact switch closure to ground
 #define pgDn 16 // Page-Down buttton, SPST momentary contact switch closure to ground
+#define esc 4 // Escape button, multiple uses
 #ifdef esp32Thing
   #define ledPin 5 // On-board LED indicator
   #define ePin 0 // On-board pushbutton
 #endif
 #ifdef wemos
   #define ledPin 22
+  #define LED_ON LOW
+  #define LED_OFF HIGH
 #endif
 
 #include <BleKeyboard.h>
+// Download BleKeyboard from here: https://github.com/T-vK/ESP32-BLE-Keyboard
 
 BleKeyboard bleKeyboard("PtPedal");
 
 void setup() {
   pinMode(pgUp, INPUT_PULLUP);
   pinMode(pgDn, INPUT_PULLUP);
+  pinMode(esc, INPUT_PULLUP);
   #ifdef esp32Thing
     pinMode(ePin, INPUT_PULLUP);
   #endif
   pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, LED_OFF);
+  // holding escape button during power-up suppresses Bluetooth, for charging
+  if (!digitalRead(esc)){
+    while(1);
+  }
   bleKeyboard.begin();
 }
 
+void processKey(int pin, uint8_t key){
+  if (!digitalRead(pin)) {
+      digitalWrite(ledPin, LED_ON);
+      delay(100);
+      bleKeyboard.write(key);
+      bleKeyboard.releaseAll();
+      while(!digitalRead(pin));
+      delay(100);
+      digitalWrite(ledPin, LED_OFF);
+    }
+}
 void loop() {
-  int pu, pd;
-  int i;
 
   // Each key is de-bounced in a primitive way, sends one character to the
   // host, and then waits for the key to be released. There is no auto-repeat,
   // because that's a bad thing in a sheet music reading situation
   
   while(bleKeyboard.isConnected()) {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(ledPin, LED_OFF);
+    processKey(pgUp, KEY_PAGE_UP);
+    processKey(pgDn, KEY_PAGE_DOWN);
+    processKey(esc, KEY_F5); // F5 toggles presentation mode in Sumatra PDF.
     
-    if (!digitalRead(pgUp)) {
-      digitalWrite(ledPin, HIGH);
-      delay(100);
-      bleKeyboard.write(KEY_PAGE_UP);
-      bleKeyboard.releaseAll();
-      while(!digitalRead(pgUp));
-      delay(100);
-      digitalWrite(ledPin, LOW);
-    }
-    
-    if (!digitalRead(pgDn)) {
-      digitalWrite(ledPin, HIGH);
-      delay(100);
-      bleKeyboard.write(KEY_PAGE_DOWN);
-      bleKeyboard.releaseAll();
-      while(!digitalRead(pgDn));
-      delay(100);
-      digitalWrite(ledPin, LOW);
-    }
-
     #ifdef esp32Thing
       if (!digitalRead(ePin)) {
-        digitalWrite(ledPin, HIGH);
+        digitalWrite(ledPin, LED_ON);
         delay(100);
         bleKeyboard.print("e");
         while(!digitalRead(pgDn));
         delay(100);
-        digitalWrite(ledPin, LOW);
+        digitalWrite(ledPin, LED_OFF);
       }
     #endif
   }
