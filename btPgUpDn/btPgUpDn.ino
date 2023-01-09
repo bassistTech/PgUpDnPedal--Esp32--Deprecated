@@ -24,8 +24,8 @@
 
 // Pin definitions
 
-//#define esp32Thing
-#define wemos
+#define esp32Thing
+//#define wemos
 // for WEMOS board, compile under WEMOS LOLIN32 Lite
 // add to external libraries: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 // add "esp32" in library manager
@@ -36,6 +36,8 @@
 #ifdef esp32Thing
   #define ledPin 5 // On-board LED indicator
   #define ePin 0 // On-board pushbutton
+  #define LED_ON HIGH
+  #define LED_OFF LOW
 #endif
 #ifdef wemos
   #define ledPin 22
@@ -47,6 +49,7 @@
 // Download BleKeyboard from here: https://github.com/T-vK/ESP32-BLE-Keyboard
 
 BleKeyboard bleKeyboard("PtPedal");
+int charging = 0;
 
 void setup() {
   pinMode(pgUp, INPUT_PULLUP);
@@ -59,7 +62,8 @@ void setup() {
   digitalWrite(ledPin, LED_OFF);
   // holding escape button during power-up suppresses Bluetooth, for charging
   if (!digitalRead(esc)){
-    while(1);
+    charging = 1;
+    return;
   }
   bleKeyboard.begin();
 }
@@ -80,6 +84,8 @@ void loop() {
   // Each key is de-bounced in a primitive way, sends one character to the
   // host, and then waits for the key to be released. There is no auto-repeat,
   // because that's a bad thing in a sheet music reading situation
+
+  if (charging) return;
   
   while(bleKeyboard.isConnected()) {
     digitalWrite(ledPin, LED_OFF);
