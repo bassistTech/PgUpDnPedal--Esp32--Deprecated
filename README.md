@@ -1,4 +1,8 @@
-# PgUpDnPedal
+# PgUpDnPedal -- Deprecated!
+
+This repo is deprecated. I've learned that it has a terrible battery life.
+
+New version coming soon.
 
 ## Page turning pedal based on ESP32 microcontroller
 
